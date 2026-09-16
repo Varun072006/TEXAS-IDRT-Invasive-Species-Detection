@@ -1,0 +1,34 @@
+# Core
+numpy>=1.26
+pandas>=2.2
+scipy>=1.12
+
+# Computer vision / image processing
+opencv-python>=4.9
+scikit-image>=0.22
+Pillow>=10.2
+
+# Deep learning (SAM + DINO family)
+torch>=2.2
+torchvision>=0.17
+segment-anything>=1.0     # Meta's Segment Anything Model (SAM)
+# DINOv2 is loaded via torch.hub (facebookresearch/dinov2) at runtime, no extra package needed
+
+# Clustering / ML
+scikit-learn>=1.4
+hdbscan>=0.8.33
+
+# Geospatial / GIS export
+geopandas>=0.14
+shapely>=2.0
+
+# Visualization
+matplotlib>=3.8
+
+# Notebook
+jupyter>=1.0
+ipykernel>=6.29
+
+# Azure-compatible cloud integration (production data ingestion / deployment path)
+azure-storage-blob>=12.19
+python-dotenv>=1.0

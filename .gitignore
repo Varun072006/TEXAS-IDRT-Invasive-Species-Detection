@@ -1,0 +1,56 @@
+# --- Confidentiality guardrails ---
+# Never commit real drone imagery, datasets, credentials, or model weights.
+*.env
+.env
+.env.*
+!*.env.example
+secrets/
+credentials/
+*.pth
+*.pt
+*.ckpt
+*.onnx
+raw_data/
+private_data/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.Python
+*.so
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- Outputs (regenerable, not source) ---
+outputs/*
+!outputs/README.md
+
+# --- Sample data (never commit real imagery here) ---
+sample_data/*
+!sample_data/README.md
+
+# --- Logs / caches ---
+*.log
+.cache/
+.pytest_cache/
+.mypy_cache/
+.IDRT-BIT_Invasive_POC_NH.pdf
