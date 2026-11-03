@@ -1,0 +1,68 @@
+# Invasive species detection pipeline: default configuration.
+# Values marked [UNCONFIRMED] are placeholders that must be confirmed from data or the flight team.
+
+project: invasive_v1
+
+# Ordered class list. Index in this list = class id used by the detector.
+classes: [chinese_tallow, mccartney_rose]
+
+# Labelbox display names -> canonical class. Matching ignores case, spaces and punctuation.
+# Note the Labelbox project spells it "Macartney Rose".
+class_aliases:
+  chinese_tallow: ["Chinese Tallow", "Chinese Tallow Tree", "chinese_tallow"]
+  mccartney_rose: ["Macartney Rose", "McCartney Rose", "Mccartney rose", "mccartney_rose"]
+
+paths:
+  data_root: "../data/raw"      # relative to this file; flights live in <data_root>/<flight>/IMAGES, geotags in OUTPUT
+  workdir: "../work"            # all generated files (manifest, datasets, runs, outputs)
+
+# Labels were drawn in Labelbox on the displayed (EXIF-upright) image. Frames carry EXIF
+# orientation 3 (rotated 180 deg), so everything in this pipeline works in UPRIGHT pixel space.
+labels_space: upright
+
+tiling:
+  tile_px: 1024        # model input size
+  scale: 0.5           # [DATA] downscale before cutting; decide from box-size statistics
+  overlap: 0.25
+  min_visible: 0.5     # keep a clipped box only if >= this fraction remains in the tile
+
+dataset:
+  neg_tile_ratio: 1.0                       # negative tiles per positive tile
+  extra_tiles_per_box: {chinese_tallow: 2}  # box-centred jittered tiles, oversamples the minority class
+  split: {strategy: spatial_blocks, folds: 5, block_size: 6, buffer_frames: 1, seed: 42}
+
+train:
+  model: yolo11s.pt     # swappable; mind the AGPL licence of Ultralytics
+  epochs: 100
+  batch: 4              # RTX 3050 6 GB laptop GPU
+  imgsz: 1024
+  seed: 42
+
+infer:
+  tta: false
+  conf_floor: 0.05
+  thresholds:           # recalibrate on validation data
+    chinese_tallow: {candidate: 0.25, high: 0.6}
+    mccartney_rose: {candidate: 0.25, high: 0.6}
+  merge_iou: 0.5
+
+camera:
+  nominal_agl_m: 60.0   # flight plan height above ground (folder names say 60 m)
+  default: {sensor_width_mm: 23.5, focal_mm: null, angles_in_upright: false}
+  per_flight:           # first key contained in the flight folder name wins
+    # HARC: Sony ILX-LR1 (61 MP full-frame), 17 mm lens (EXIF). EXIF orientation 1; angles refer to the raw image.
+    #   calibrate_georef.py: pix4d convention, residual 0.77 m (alternatives 5.5-9 m).
+    HARC: {sensor_width_mm: 35.7, focal_mm: 17.0, angles_in_upright: false}
+    # DPP: Sony ILCE-6100, EXIF has no focal length. EXIF orientation 3 (rotated 180 deg).
+    #   calibrate_georef.py: angles refer to the UPRIGHT image; focal 12.0 mm minimises the residual (0.49 m;
+    #   11.5 mm: 1.2 m, 12.5 mm: 1.6 m). Estimated from image overlap, not read from the lens: confirm with the team.
+    DPP:  {sensor_width_mm: 23.5, focal_mm: 12.0, angles_in_upright: true}
+
+georef:
+  method: wingtra_ppk   # PPK geotags with omega/phi/kappa; fallback: exif_flat
+  rotation_variant: pix4d   # validated on HARC and DPP EO flights by scripts/calibrate_georef.py
+  height_error_m: 3.0   # assumed terrain/height error for the heuristic error estimate
+  dedup_distance_m: 1.5
+
+export:
+  formats: [gpkg, geojson, shp, csv]
