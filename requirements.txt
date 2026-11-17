@@ -16,3 +16,6 @@ pytest
 torch
 torchvision
 ultralytics
+sahi
+scikit-learn
+open-clip-torch

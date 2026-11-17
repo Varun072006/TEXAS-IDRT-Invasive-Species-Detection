@@ -16,9 +16,11 @@ paths:
   data_root: "../data/raw"      # relative to this file; flights live in <data_root>/<flight>/IMAGES, geotags in OUTPUT
   workdir: "../work"            # all generated files (manifest, datasets, runs, outputs)
 
-# Labels were drawn in Labelbox on the displayed (EXIF-upright) image. Frames carry EXIF
-# orientation 3 (rotated 180 deg), so everything in this pipeline works in UPRIGHT pixel space.
-labels_space: upright
+# CORRECTED: Labelbox boxes are in the STORED pixel grid (what Labelbox displays), not the EXIF-upright image, even though
+# the frames carry EXIF orientation 3 (180 deg). Verified on all 97 AB_Oppenheimer frames (data/images/corrected/).
+# NOTE: nothing reads this key yet, and src/invasive/dataset.py still loads upright pixels (old Labelbox path): for the
+# AB_Oppenheimer data use scripts/ab_*.py, which read the stored grid.
+labels_space: raw
 
 tiling:
   tile_px: 1024        # model input size

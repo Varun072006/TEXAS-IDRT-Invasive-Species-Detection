@@ -11,6 +11,10 @@ data/labels/*
 !data/labels/.gitkeep
 data/dsm/*
 !data/dsm/.gitkeep
+data/images/*
+!data/images/.gitkeep
+data/corrected/*
+!data/corrected/.gitkeep
 
 # Confidential drone aerial imagery & rasters
 *.jpg
@@ -56,6 +60,12 @@ export.ndjson
 *.safetensors
 *.bin
 *.engine
+
+# Compressed archives & data dumps
+*.zip
+*.tar
+*.gz
+*.7z
 
 # Credentials, tokens, and local secrets
 .env
