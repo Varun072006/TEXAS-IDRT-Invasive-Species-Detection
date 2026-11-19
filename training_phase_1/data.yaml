@@ -1,0 +1,6 @@
+path: /home/bitspark/Varun/TEXAS-IDRT-Invasive-Species-Detection/training_phase_1/dataset
+train: images/train
+val: images/val
+names:
+  0: macartney_rose
+  1: chinese_tallow

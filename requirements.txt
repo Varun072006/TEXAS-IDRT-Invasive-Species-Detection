@@ -8,7 +8,7 @@ pyproj
 shapely
 geopandas
 pyogrio
-fiona
+# fiona
 tabulate
 tqdm
 pytest
